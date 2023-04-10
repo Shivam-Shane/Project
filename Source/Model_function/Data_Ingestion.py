@@ -5,8 +5,6 @@ from dataclasses import dataclass
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-
-
 @dataclass
 class DataIngestionCreation:
     train_data_path:str=os.path.join('Assets',"train.csv")## train data
