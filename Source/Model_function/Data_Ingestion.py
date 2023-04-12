@@ -4,6 +4,7 @@ from Source.logger import logging
 from dataclasses import dataclass
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from Data_transformation import data_transform
 
 @dataclass
 class DataIngestionCreation:
@@ -61,3 +62,9 @@ class  DataIngestion:
 if __name__=="__main__":
     obj=DataIngestion()
     train_path,test_path=obj.DataIngestion_initiated()
+
+    data_transformation=data_transform()
+    
+    data_transformation.initiate_data_transformation(train_path,test_path)
+
+    
