@@ -4,7 +4,7 @@ from Source.logger import logging
 from dataclasses import dataclass
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from Data_transformation import data_transform
+from Data_transformation import Data_transform
 
 @dataclass
 class DataIngestionCreation:
@@ -36,15 +36,18 @@ class  DataIngestion:
                 # Split dataset into train and test data
                 train_data,test_data=train_test_split(dataset,random_state=40,test_size=0.2)
                 # Create directory if not exists
-                logging.info("Creating directory")
-                os.makedirs(os.path.dirname(self.DataIngestion.train_data_path),exist_ok=True)
-                os.makedirs(os.path.dirname(self.DataIngestion.test_data_path),exist_ok=True)
-                logging.info("Created directory successfully")
+                logging.info("Checking directory for storing data")
+                if os.path.exists(self.DataIngestion.train_data_path) and os.path.exists(self.DataIngestion.test_data_path):
+                    logging.info("Directory already exists!")
+                else:    
+                    os.makedirs(os.path.dirname(self.DataIngestion.train_data_path),exist_ok=True)
+                    os.makedirs(os.path.dirname(self.DataIngestion.test_data_path),exist_ok=True)
+                    logging.info("Created directory successfully")
                 # Store train and test data in given paths
                 logging.info("Store Train and test data into given path")
                 train_data.to_csv(self.DataIngestion.train_data_path,index=False,header=True)
                 test_data.to_csv(self.DataIngestion.test_data_path,index=False,header=True)
-                logging.info("Train and test data stored succesfully")
+                logging.info("Train and test data stored succesfully at",)
             except Exception as e:
                     logging.info(str(e))
                     raise CustomException(str(e),sys.exc_info())  
@@ -63,7 +66,7 @@ if __name__=="__main__":
     obj=DataIngestion()
     train_path,test_path=obj.DataIngestion_initiated()
 
-    data_transformation=data_transform()
+    data_transformation=Data_transform()
     
     data_transformation.initiate_data_transformation(train_path,test_path)
 
