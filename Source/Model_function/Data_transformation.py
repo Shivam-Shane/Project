@@ -5,10 +5,11 @@ import os,sys
 import pandas as pd
 import numpy as np
 import datetime as dt
-
+import time
 import nltk,string
 nltk.download('stopwords')
 nltk.download('wordnet')
+
 from nltk import WordNetLemmatizer,PorterStemmer,wordpunct_tokenize
 from nltk.corpus import stopwords
 
@@ -59,13 +60,15 @@ def Date_time_function(data):
     return data['days_held'].values.reshape(-1,1)
 
 @dataclass
-class data_transofrmation_config:
+class Data_transformation_config:
     pass
-class data_transform:
+class Data_transform:
     try:
-        logging.info("Data transformation started")
+        
         def get_data_transformation(self):
             ## Relevent Columns to preprocess
+            start=time.time()
+            logging.info("Data transformation started")
             Numerical_Column=[]
             Categorical_Column=['Product','Timely response?','Company response to consumer','Submitted via']
             NLP_Column=['Issue']
@@ -104,38 +107,47 @@ class data_transform:
                                         ,("Date_time_Transfomer",Date_time_pipeline,Date_Time_Column)
                                         ]
                                         ,remainder='passthrough')# untoched column that are not transformed   
+            logging.info("ColumnTransformer initiated pipelines succesfully") 
+            end=time.time()
+            logging.info("Data transformation initited succesfully in: {:.2f} seconds".format(end - start))
             return column_preprocessor
-        logging.info("ColumnTransformer finished succesful") 
-        logging.info("Data transformation finished succesful")
+
     except Exception as e:
-          raise CustomException(str(e),sys.exc_info()) 
+          raise CustomException(e,sys.exc_info()) 
 
     try:
-        logging.info("Data transformation initiated")
+        
         def initiate_data_transformation(self,train_path,test_path):
+            start = time.time()
+            logging.info("Data transformation initiated")
             train_dataframe=pd.read_csv(train_path)
             test_dataframe=pd.read_csv(test_path)
-            logging.info("Dataset succesfull stored for transformatiom")
+            logging.info("Dataset succesfully stored for transformatiom")
             Column_Preprocessor_Object=self.get_data_transformation()
             Train_features=train_dataframe.drop(columns=['Consumer disputed?'],axis=1)
             Train_target_feature=train_dataframe['Consumer disputed?']
 
             Test_features=test_dataframe.drop(columns=['Consumer disputed?'],axis=1)
             Test_target_feature=test_dataframe['Consumer disputed?']
-            logging.info("Dataset succesfull coupled for training and testing phase")
+            logging.info("Dataset succesfully coupled for training and testing phase")
+
+
             Label_encoder_object = LabelEncoder()
             logging.info("Starting column transformation on the dataset")
             Train_features_attr=Column_Preprocessor_Object.fit_transform(Train_features)
             Test_features_attr=Column_Preprocessor_Object.transform(Test_features)
-            logging.info("Dataset transformation succesfully done")
+            end = time.time()
+            logging.info("Dataset transformation succesfully done transforming our dataset in: {:.2f} seconds".format(end - start))
+
 
             logging.info("Transforming our target data column")
             Train_target_attr = Label_encoder_object.fit_transform(Train_target_feature)
             Test_target_attr=Label_encoder_object.transform(Test_target_feature)
-            logging.info("Target column transoforming succesfully")
+            logging.info("Target column transforming successfully done ")
+
 
     except Exception as e:
-          raise CustomException(str(e),sys.exc_info()) 
+          raise CustomException(e,sys.exc_info()) 
 
         
 
