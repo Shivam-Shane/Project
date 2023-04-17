@@ -10,7 +10,6 @@ def save_objects_file(file_path, object):
         os.makedirs(dir_path, exist_ok=True)
         logging.info("Object directory initiated")
         with open(file_path, "wb") as file:
-            logging.info("File opened")
             dill.dump(object, file)
     except Exception as e:
         logging.info(CustomException(e, sys.exc_info()))
