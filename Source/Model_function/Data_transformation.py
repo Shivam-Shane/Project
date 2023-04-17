@@ -1,5 +1,6 @@
 from Source.logger import logging
 from Source.exception import CustomException
+import setup.py
 from dataclasses import dataclass
 import os,sys
 import pandas as pd
@@ -7,6 +8,7 @@ import numpy as np
 import datetime as dt
 import time
 import nltk,string
+
 nltk.download('stopwords')
 nltk.download('wordnet')
 
@@ -21,47 +23,47 @@ from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,Func
 import warnings
 warnings.filterwarnings('ignore')
 
+class Custom_function:
+    def NLP_function(NLP_Data):
+        NLP_Data = NLP_Data.iloc[:, 0] # convering the dataframe to series
+        tokenized_data = NLP_Data.apply(lambda x: wordpunct_tokenize(x.lower()))
 
-def NLP_function(NLP_Data):
-    NLP_Data = NLP_Data.iloc[:, 0] # convering the dataframe to series
-    tokenized_data = NLP_Data.apply(lambda x: wordpunct_tokenize(x.lower()))
+        def remove_punctuation(text):
+            return [w for w in text if w not in string.punctuation]
+        no_punctuation_data = tokenized_data.apply( lambda x: remove_punctuation(x))
 
-    def remove_punctuation(text):
-        return [w for w in text if w not in string.punctuation]
-    no_punctuation_data = tokenized_data.apply( lambda x: remove_punctuation(x))
+        Stop_words = stopwords.words('english')
+        Removed_Stopwords = [w for w in no_punctuation_data if not w in Stop_words]
+        Removed_Stopwords = pd.Series(Removed_Stopwords)
 
-    Stop_words = stopwords.words('english')
-    Removed_Stopwords = [w for w in no_punctuation_data if not w in Stop_words]
-    Removed_Stopwords = pd.Series(Removed_Stopwords)
+        def lemmatize_text(text):
+            lem_text = [WordNetLemmatizer().lemmatize(w,pos = 'v') for w in text]
+            return lem_text
+        lemmatized_data = Removed_Stopwords.apply(lambda x:lemmatize_text(x))
 
-    def lemmatize_text(text):
-        lem_text = [WordNetLemmatizer().lemmatize(w,pos = 'v') for w in text]
-        return lem_text
-    lemmatized_data = Removed_Stopwords.apply(lambda x:lemmatize_text(x))
+        def stem_text(text):
+            stem_text = [PorterStemmer().stem(w) for w in text]
+            return stem_text
+        stemmed_data = lemmatized_data.apply(lambda x:stem_text(x))
 
-    def stem_text(text):
-        stem_text = [PorterStemmer().stem(w) for w in text]
-        return stem_text
-    stemmed_data = lemmatized_data.apply(lambda x:stem_text(x))
+        clean_data=[" ".join(x) for x in stemmed_data]
+        return pd.DataFrame(clean_data, columns=['cleaned_text'])## Returing dataframe to be used for creating text to vector
 
-    clean_data=[" ".join(x) for x in stemmed_data]
-    return pd.DataFrame(clean_data, columns=['cleaned_text'])## Returing dataframe to be used for creating text to vector
-
-def Text_to_vector_function(NLP_data):
-    TfidfVector = TfidfVectorizer()
-    NLP_data = NLP_data.squeeze()
-    NLP_cleaned = TfidfVector.fit_transform(NLP_data).toarray()
-    return NLP_cleaned
-  
-def Date_time_function(data):
-    data['Date received']=pd.to_datetime(data['Date received'])
-    data['Date sent to company']=pd.to_datetime(data['Date sent to company'])
-    data['days_held']=(data['Date sent to company']-data['Date received']).dt.days
-    return data['days_held'].values.reshape(-1,1)
+    def Text_to_vector_function(NLP_data):
+        TfidfVector = TfidfVectorizer()
+        NLP_data = NLP_data.squeeze()
+        NLP_cleaned = TfidfVector.fit_transform(NLP_data).toarray()
+        return NLP_cleaned
+    
+    def Date_time_function(data):
+        data['Date received']=pd.to_datetime(data['Date received'])
+        data['Date sent to company']=pd.to_datetime(data['Date sent to company'])
+        data['days_held']=(data['Date sent to company']-data['Date received']).dt.days
+        return data['days_held'].values.reshape(-1,1)
 
 @dataclass
 class Data_transformation_config:
-    pass
+    data_transformation_file=os.path.join('Assets','data transformation.pkl')
 class Data_transform:
     try:
         
@@ -87,13 +89,13 @@ class Data_transform:
                                         ]) 
             logging.info("Nlp pipeline initiated")
             Nlp_pipline=Pipeline( steps=[
-                                        ("Nlp_extration",FunctionTransformer(NLP_function,validate=False))
-                                        ,("NLP_Text_to_vector_function",FunctionTransformer(Text_to_vector_function,validate=False))
+                                        ("Nlp_extration",FunctionTransformer(Custom_function.NLP_function,validate=False))
+                                        ,("NLP_Text_to_vector_function",FunctionTransformer(Custom_function.Text_to_vector_function,validate=False))
                                         ,("NLP_Scaler",StandardScaler())
                                         ])
             logging.info("Date_time pipeline initiated")
             Date_time_pipeline=Pipeline(steps=[
-                                        ("Date_time_transformer",FunctionTransformer(Date_time_function,validate=False))
+                                        ("Date_time_transformer",FunctionTransformer(Custom_function.Date_time_function,validate=False))
                                         ,("Date_time_Scaler",StandardScaler())
                                         ])
 
@@ -141,10 +143,18 @@ class Data_transform:
 
 
             logging.info("Transforming our target data column")
-            Train_target_attr = Label_encoder_object.fit_transform(Train_target_feature)
-            Test_target_attr=Label_encoder_object.transform(Test_target_feature)
+            Train_target_attr = Label_encoder_object.fit_transform(Train_target_feature).reshape(-1,1)
+            Test_features_attr=Label_encoder_object.transform(Test_target_feature).reshape(-1,1)
             logging.info("Target column transforming successfully done ")
 
+            Train_attribute=np.concatenate((Train_features_attr,Train_target_attr),axis=1)
+
+            Test_attribute=np.concatenate((Test_features_attr,Test_features_attr),axis=1)
+            
+            return(
+                Train_attribute,
+                Test_attribute
+            )
 
     except Exception as e:
           raise CustomException(e,sys.exc_info()) 

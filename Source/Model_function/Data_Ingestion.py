@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from Data_transformation import Data_transform
+from Data_model import Data_Model
 
 @dataclass
 class DataIngestionCreation:
@@ -68,6 +69,11 @@ if __name__=="__main__":
 
     data_transformation=Data_transform()
     
-    data_transformation.initiate_data_transformation(train_path,test_path)
+    train_attr,test_attr=data_transformation.initiate_data_transformation(train_path,test_path)
+
+    data_modeleling=Data_Model()
+    data_modeleling.Initiate_Data_Model(train_attr,test_attr)
+
+
 
     
