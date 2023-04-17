@@ -133,3 +133,4 @@ dmypy.json
 # Project Assets
 Assets\
 *.csv
+*.pkl
