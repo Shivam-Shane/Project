@@ -13,9 +13,10 @@ def get_requirements(file_path:str)->List[str]:
     return requirments
 setup(
 
-    name="Machine learning Project",
+    name="project",
     author_email='sk0551460@gamil.com',
     version="0.0.02",
     packages=find_packages(),
+    # install_require=['pandas','numpy','matplotlib','seaborn']
     install_require=get_requirements('requirements.txt')
 )
