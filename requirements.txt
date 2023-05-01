@@ -2,4 +2,6 @@ pandas
 numpy
 matplotlib
 seaborn
+flask
+datetime
 -e .
