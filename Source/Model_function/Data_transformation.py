@@ -1,8 +1,11 @@
+import os
+import sys
+import inspect,traceback
 from Source.logger import logging
 from Source.exception import CustomException
-import setup.py
+from Source.utils import save_objects_file
 from dataclasses import dataclass
-import os,sys
+
 import pandas as pd
 import numpy as np
 import datetime as dt
@@ -16,16 +19,17 @@ from nltk import WordNetLemmatizer,PorterStemmer,wordpunct_tokenize
 from nltk.corpus import stopwords
 
 from sklearn.compose import ColumnTransformer
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
+from scipy.sparse import hstack
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,FunctionTransformer
-import warnings
-warnings.filterwarnings('ignore')
 
-class Custom_function:
+
+class Custom_functions:
+
     def NLP_function(NLP_Data):
-        NLP_Data = NLP_Data.iloc[:, 0] # convering the dataframe to series
+        NLP_Data = NLP_Data['Issue'] 
         tokenized_data = NLP_Data.apply(lambda x: wordpunct_tokenize(x.lower()))
 
         def remove_punctuation(text):
@@ -47,13 +51,10 @@ class Custom_function:
         stemmed_data = lemmatized_data.apply(lambda x:stem_text(x))
 
         clean_data=[" ".join(x) for x in stemmed_data]
-        return pd.DataFrame(clean_data, columns=['cleaned_text'])## Returing dataframe to be used for creating text to vector
+        logging.info("Text preprocessing succesfully done")
+        logging.info("Returnnig preprocessed data")
+        return clean_data
 
-    def Text_to_vector_function(NLP_data):
-        TfidfVector = TfidfVectorizer()
-        NLP_data = NLP_data.squeeze()
-        NLP_cleaned = TfidfVector.fit_transform(NLP_data).toarray()
-        return NLP_cleaned
     
     def Date_time_function(data):
         data['Date received']=pd.to_datetime(data['Date received'])
@@ -63,18 +64,22 @@ class Custom_function:
 
 @dataclass
 class Data_transformation_config:
-    data_transformation_file=os.path.join('Assets','data transformation.pkl')
+
+    data_transformation_file=os.path.join('Assets',"Data_Transformation.pkl")
+
 class Data_transform:
     try:
         
         def get_data_transformation(self):
-            ## Relevent Columns to preprocess
+            
             start=time.time()
+
             logging.info("Data transformation started")
             Numerical_Column=[]
             Categorical_Column=['Product','Timely response?','Company response to consumer','Submitted via']
             NLP_Column=['Issue']
             Date_Time_Column=['Date sent to company','Date received']
+
             ## Pipelines 
             logging.info("Numerical pipeline initiated")
             Num_pipeline=Pipeline(steps=[
@@ -89,13 +94,13 @@ class Data_transform:
                                         ]) 
             logging.info("Nlp pipeline initiated")
             Nlp_pipline=Pipeline( steps=[
-                                        ("Nlp_extration",FunctionTransformer(Custom_function.NLP_function,validate=False))
-                                        ,("NLP_Text_to_vector_function",FunctionTransformer(Custom_function.Text_to_vector_function,validate=False))
-                                        ,("NLP_Scaler",StandardScaler())
+                                        ("Nlp_extration",FunctionTransformer(Custom_functions.NLP_function,validate=False))
+                                        ,("CountVector",CountVectorizer())
+                                        # ,("NLP_Scaler",StandardScaler())
                                         ])
             logging.info("Date_time pipeline initiated")
             Date_time_pipeline=Pipeline(steps=[
-                                        ("Date_time_transformer",FunctionTransformer(Custom_function.Date_time_function,validate=False))
+                                        ("Date_time_transformer",FunctionTransformer(Custom_functions.Date_time_function,validate=False))
                                         ,("Date_time_Scaler",StandardScaler())
                                         ])
 
@@ -121,11 +126,15 @@ class Data_transform:
         
         def initiate_data_transformation(self,train_path,test_path):
             start = time.time()
+
             logging.info("Data transformation initiated")
             train_dataframe=pd.read_csv(train_path)
             test_dataframe=pd.read_csv(test_path)
-            logging.info("Dataset succesfully stored for transformatiom")
+            logging.info("Dataset successfully stored for transformatiom")
+
             Column_Preprocessor_Object=self.get_data_transformation()
+            
+
             Train_features=train_dataframe.drop(columns=['Consumer disputed?'],axis=1)
             Train_target_feature=train_dataframe['Consumer disputed?']
 
@@ -133,30 +142,42 @@ class Data_transform:
             Test_target_feature=test_dataframe['Consumer disputed?']
             logging.info("Dataset succesfully coupled for training and testing phase")
 
-
+            
             Label_encoder_object = LabelEncoder()
             logging.info("Starting column transformation on the dataset")
             Train_features_attr=Column_Preprocessor_Object.fit_transform(Train_features)
             Test_features_attr=Column_Preprocessor_Object.transform(Test_features)
             end = time.time()
+            
+            
             logging.info("Dataset transformation succesfully done transforming our dataset in: {:.2f} seconds".format(end - start))
 
 
             logging.info("Transforming our target data column")
             Train_target_attr = Label_encoder_object.fit_transform(Train_target_feature).reshape(-1,1)
-            Test_features_attr=Label_encoder_object.transform(Test_target_feature).reshape(-1,1)
+            Test_target_feature=Label_encoder_object.transform(Test_target_feature).reshape(-1,1)
             logging.info("Target column transforming successfully done ")
-
-            Train_attribute=np.concatenate((Train_features_attr,Train_target_attr),axis=1)
-
-            Test_attribute=np.concatenate((Test_features_attr,Test_features_attr),axis=1)
             
+            
+            Train_attribute= hstack((Train_features_attr, Train_target_attr))
+            Test_attribute= hstack((Test_features_attr, Test_target_feature))
+
+           
+
+            logging.info("Saving the object file")
+            save_objects_file(
+                file_path=Data_transformation_config.data_transformation_file,
+                object=Column_Preprocessor_Object
+
+            )
+
             return(
                 Train_attribute,
                 Test_attribute
             )
 
     except Exception as e:
+          logging.info(e)
           raise CustomException(e,sys.exc_info()) 
 
         

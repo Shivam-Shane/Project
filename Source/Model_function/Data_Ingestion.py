@@ -4,7 +4,7 @@ from Source.logger import logging
 from dataclasses import dataclass
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from Data_transformation import Data_transform
+from Source.Model_function.Data_transformation import Data_transform
 from Data_model import Data_Model
 
 @dataclass
@@ -52,12 +52,12 @@ class  DataIngestion:
             except Exception as e:
                     logging.info(str(e))
                     raise CustomException(str(e),sys.exc_info())  
-
+            logging.info("Data ingestion successfuly completed") 
             return(
                 self.DataIngestion.train_data_path,
                 self.DataIngestion.test_data_path  
             )        
-            logging.info("Data ingestion successfuly completed")            
+                       
         except Exception as e:
                 logging.info(e)
                 raise CustomException(str(e),sys.exc_info())
@@ -67,9 +67,9 @@ if __name__=="__main__":
     obj=DataIngestion()
     train_path,test_path=obj.DataIngestion_initiated()
 
-    data_transformation=Data_transform()
+    data_transformation_obj=Data_transform()
     
-    train_attr,test_attr=data_transformation.initiate_data_transformation(train_path,test_path)
+    train_attr,test_attr=data_transformation_obj.initiate_data_transformation(train_path,test_path)
 
     data_modeleling=Data_Model()
     data_modeleling.Initiate_Data_Model(train_attr,test_attr)
