@@ -1,7 +1,3 @@
-import sys,os
-import inspect
-
-
 def error_message_details(error, error_detail):
     _, _, exc_tb = error_detail
     filename = exc_tb.tb_frame.f_code.co_filename
@@ -10,7 +6,7 @@ def error_message_details(error, error_detail):
     return error_message                                                                 
 
 
-class CustomException(Exception):
+class CustomExceptionClass(Exception):
     def __init__(self, error_message, exc_info):
         super().__init__(error_message)
         self.error_message = error_message_details(error_message, exc_info)
