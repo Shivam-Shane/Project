@@ -1,14 +1,11 @@
 import os
 import sys
-import inspect,traceback
 from Source.logger import logging
-from Source.exception import CustomException
+from Source.exception import CustomExceptionClass
 from Source.utils import save_objects_file
 from dataclasses import dataclass
 
 import pandas as pd
-import numpy as np
-import datetime as dt
 import time
 import nltk,string
 
@@ -20,15 +17,14 @@ from nltk.corpus import stopwords
 
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import CountVectorizer
-from scipy.sparse import hstack
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,FunctionTransformer
+from sklearn.preprocessing import OneHotEncoder,LabelEncoder,StandardScaler,MinMaxScaler,MaxAbsScaler,RobustScaler,FunctionTransformer
 
 
-class Custom_functions:
+class CustomFunctionsClass:
 
-    def NLP_function(NLP_Data):
+    def nlp_function(NLP_Data):
         NLP_Data = NLP_Data['Issue'] 
         tokenized_data = NLP_Data.apply(lambda x: wordpunct_tokenize(x.lower()))
 
@@ -56,7 +52,7 @@ class Custom_functions:
         return clean_data
 
     
-    def Date_time_function(data):
+    def date_time_function(data):
         data['Date received']=pd.to_datetime(data['Date received'])
         data['Date sent to company']=pd.to_datetime(data['Date sent to company'])
         data['days_held']=(data['Date sent to company']-data['Date received']).dt.days
@@ -67,7 +63,7 @@ class Data_transformation_config:
 
     data_transformation_file=os.path.join('Assets',"Data_Transformation.pkl")
 
-class Data_transform:
+class DataTransformClass:
     try:
         
         def get_data_transformation(self):
@@ -84,24 +80,24 @@ class Data_transform:
             logging.info("Numerical pipeline initiated")
             Num_pipeline=Pipeline(steps=[
                                         ("Numerical_Imputer",SimpleImputer(strategy='median'))
-                                        ,("Numerical_Scaler",StandardScaler())
+                                        ,("Numerical_Scaler",MinMaxScaler())
                                         ])
             logging.info("Categorical pipeline initiated")
             Cat_pipeline=Pipeline( steps=[
                                         ("Categorical_Imputer",SimpleImputer(strategy='most_frequent'))
                                         ,('Categorical_Onehot',OneHotEncoder(sparse=False,drop='first'))
-                                        ,("Categorical_Scaler",StandardScaler())
+                                        ,("Categorical_Scaler",MinMaxScaler())
                                         ]) 
             logging.info("Nlp pipeline initiated")
             Nlp_pipline=Pipeline( steps=[
-                                        ("Nlp_extration",FunctionTransformer(Custom_functions.NLP_function,validate=False))
+                                        ("Nlp_extration",FunctionTransformer(CustomFunctionsClass.nlp_function,validate=False))
                                         ,("CountVector",CountVectorizer())
-                                        # ,("NLP_Scaler",StandardScaler())
+                                        ,("NLP_Scaler",MaxAbsScaler())
                                         ])
             logging.info("Date_time pipeline initiated")
             Date_time_pipeline=Pipeline(steps=[
-                                        ("Date_time_transformer",FunctionTransformer(Custom_functions.Date_time_function,validate=False))
-                                        ,("Date_time_Scaler",StandardScaler())
+                                        ("Date_time_transformer",FunctionTransformer(CustomFunctionsClass.date_time_function,validate=False))
+                                        ,("Date_time_Scaler",MinMaxScaler())
                                         ])
 
             logging.info("ColumnTransformer started running pipelines")    
@@ -120,7 +116,8 @@ class Data_transform:
             return column_preprocessor
 
     except Exception as e:
-          raise CustomException(e,sys.exc_info()) 
+          logging.error(str(e))
+          raise CustomExceptionClass(e,sys.exc_info()) 
 
     try:
         
@@ -148,21 +145,14 @@ class Data_transform:
             Train_features_attr=Column_Preprocessor_Object.fit_transform(Train_features)
             Test_features_attr=Column_Preprocessor_Object.transform(Test_features)
             end = time.time()
-            
-            
+           
             logging.info("Dataset transformation succesfully done transforming our dataset in: {:.2f} seconds".format(end - start))
 
-
             logging.info("Transforming our target data column")
-            Train_target_attr = Label_encoder_object.fit_transform(Train_target_feature).reshape(-1,1)
-            Test_target_feature=Label_encoder_object.transform(Test_target_feature).reshape(-1,1)
+            Train_target_attr = Label_encoder_object.fit_transform(Train_target_feature)
+            Test_target_feature=Label_encoder_object.transform(Test_target_feature)
             logging.info("Target column transforming successfully done ")
-            
-            
-            Train_attribute= hstack((Train_features_attr, Train_target_attr))
-            Test_attribute= hstack((Test_features_attr, Test_target_feature))
-
-           
+                      
 
             logging.info("Saving the object file")
             save_objects_file(
@@ -172,13 +162,12 @@ class Data_transform:
             )
 
             return(
-                Train_attribute,
-                Test_attribute
+                Train_features_attr,Train_target_attr,Test_features_attr,Test_target_feature
             )
 
     except Exception as e:
-          logging.info(e)
-          raise CustomException(e,sys.exc_info()) 
+          logging.error(str(e))
+          raise CustomExceptionClass(e,sys.exc_info()) 
 
         
 
