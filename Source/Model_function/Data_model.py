@@ -1,5 +1,5 @@
 from Source.logger import logging
-from Source.exception import CustomException
+from Source.exception import CustomExceptionClass
 from Source.utils import save_objects_file
 from dataclasses import dataclass
 
@@ -15,37 +15,29 @@ warnings.filterwarnings('ignore')
 
 
 @dataclass
-class Data_Model_config:
+class DataModelConfig:
     model_trained_file=os.path.join('Assets',"Model_Trained.pkl")
 
-class Data_Model:
+class DataModelClass:
     try:
-        def Initiate_Data_Model(self,train_array,test_array):
+        def initiate_data_model(self,train_array,train_traget_array,test_array,test_traget_array):
             logging.info("Data Modeling initiated")
             
-            # x_train,y_train,x_test,y_test=(train_array[:,:-1].toarray(),train_array[:,-1].toarray(),test_array[:,:-1].toarray(),test_array[:,-1].toarray())
-            # x_train,y_train,x_test,y_test=(train_array.todense()[:,:-1],train_array.todense()[:,-1],test_array.todense()[:,:-1],test_array.todense()[:,-1])
-            x_train = np.asarray(train_array.todense()[:,:-1])
-            y_train = np.asarray(train_array.todense()[:,-1])
-            x_test = np.asarray(test_array.todense()[:,:-1])
-            y_test = np.asarray(test_array.todense()[:,-1])
 
-
+            print(train_array.shape,type(train_array),train_traget_array.shape,type(train_traget_array))
             logging.info("Model Training data seprated")
 
             model_DTC = DecisionTreeClassifier()
-            model_DTC.fit(x_train, y_train)## model fitting on training data
+            model_DTC.fit(train_array, train_traget_array)## model fitting on training data
 
-            y_pred = model_DTC.predict(x_test)### prediction on validation set Validation set
-
-            val_accuracy = accuracy_score(y_test, y_pred)## accuracy score on validation set
             save_objects_file(
-                        file_path=Data_Model_config.model_trained_file,
+                        file_path=DataModelConfig.model_trained_file,
                         object=model_DTC
 
             )
-            return val_accuracy
+            
 
             
     except Exception as e:
-        raise CustomException(e,sys.exc_info())     
+        logging.error(str(e))
+        raise CustomExceptionClass(e, sys.exc_info())      
