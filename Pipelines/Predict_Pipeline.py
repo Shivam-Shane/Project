@@ -1,20 +1,20 @@
 import os
 import sys
 
-import numpy as np
+
 import pandas as pd
 
-from Source.exception import CustomException
+from Source.exception import CustomExceptionClass
 from Source.logger import logging
 from Source.utils import load_obj_file
 
 
-class PredictPipeline:
+class PredictPipelineClass:
     def __init__(self):
         pass
 
-    def predict_dataset(self,feat):
-        feature=feat
+    def predict_dataset(self,feature):
+
         try:
             logging.info("Starting prediction on data{}".format(feature))
 
@@ -36,18 +36,22 @@ class PredictPipeline:
             print(data_scaled.shape)
             logging.info("Starting prediction on dataset")
             result=model.predict(data_scaled)
-            logging.info("Succeefully predicted")
+            logging.info("Succeefully predicted{}".format(result*100))
 
         except Exception as e:
-                logging.info(e)
+                logging.error(str(e))
                 result=None
-                raise CustomException(str(e),sys.exc_info())
+                raise CustomExceptionClass(str(e),sys.exc_info())
         logging.info("Returing result")
-        return result
+        if result==0:
+            return 'Consumer not disputed'
+        else:
+            return 'Consumer disputed'
+        
           
 
 
-class CustomData:
+class CustomDataClass:
     def __init__(self,Date_Received,Product_Name,Issue_Detail,Submitted_Via, Date_sent_to_company,Company_Responce,Timely_Responce):
         self.Date_Received=Date_Received
         self.Product_Name=Product_Name
@@ -69,9 +73,11 @@ class CustomData:
                "Timely response?":[self.Timely_Responce]}
             
         except Exception as e:
-            logging.info(e)
-            raise CustomException(str(e),sys.exc_info())  
-        logging.info("Done creating Data from dataframe")     
-        return pd.DataFrame(custom_data_input)
+            logging.error(str(e))
+            raise CustomExceptionClass(str(e),sys.exc_info())  
+        logging.info("Done creating Data from dataframe") 
+        dataframe_data= pd.DataFrame(custom_data_input)
+        dataframe_data.to_csv("D:\Shane\Projects\erow.csv")
+        return dataframe_data
 
         
