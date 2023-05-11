@@ -1,4 +1,5 @@
-import logging, os
+import logging
+import os
 from datetime import datetime
 
 LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M')}.log"
@@ -9,6 +10,6 @@ LOG_FILE_PATH = os.path.join(LOGS_PATH, LOG_FILE)
 
 logging.basicConfig(
     filename=LOG_FILE_PATH,
-    format="[ %(asctime)s]-line no-%(lineno)d-filepath-%(pathname)s- %(levelname)s-%(message)s",
+    format="[%(asctime)s]-line_%(lineno)d_file_%(pathname)s %(levelname)s_%(message)s",
     level=logging.INFO,
 )
