@@ -4,4 +4,6 @@ matplotlib
 seaborn
 flask
 datetime
+NLTK
+sklearn
 -e .
