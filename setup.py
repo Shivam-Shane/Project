@@ -13,10 +13,9 @@ def get_requirements(file_path:str)->List[str]:
     return requirments
 setup(
 
-    name="project",
+    name="END To END NLP Project with CICD Pipelines",
     author_email='sk0551460@gamil.com',
     version="0.0.02",
     packages=find_packages(),
-    # install_require=['pandas','numpy','matplotlib','seaborn']
     install_require=get_requirements('requirements.txt')
 )

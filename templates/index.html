@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Consumer Disputed Predictor </title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+
+</head>
+<body>
 	<center><h1>Consumer Disputed Predictor </h1></center>
+	<div class="container">
+		<p>Our mission is to level the playing field between banks and consumers.</p>
+
+            <form method="post">
+                    
+                <div class="input-group">
+                    <label for="Date">Date Received</label>
+                    <input type="date" id="Date" name="Date_Received" placeholder="11-02-2022" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Product Name">Product Name:</label>
+                    <input type="text" id="Product Name" name="Product_Name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Provide Issue Detail">Provide Issue Detail:</label>
+                    <input type="text" id="Provide Issue Detail" name="Issue_Detail" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Submitting Via">Submitted Via:</label>
+                    <select id="Submitting Via"  name="Submitted_Via">
+                        <option value="Email">Email</option>
+                        <option value="Web">Web</option>
+                        <option value="Phone">Phone</option>
+                        <option value="Postal mail">Postal mail</option>
+                        <option value="Referral">Referral</option>
+                        <option value="Fax">Fax</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                        <label for="Date">Date sent to company</label>
+                        <input type="date" id="Date" name="Date_sent_to_company" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="text">Company response:</label>
+                    <select id="Company Responce"  name="Company_Responce",required>
+                        <option value="Closed with explanation">Closed with explanation</option>
+                        <option value="Closed with non-monetary relief">Closed with non-monetary relief</option>
+                        <option value="Closed with monetary relief">Closed with monetary relief</option>
+                        <option value="Closed without relief">Closed without relief</option>
+                        <option value="Closed">Closed</option>
+                        <option value="Closed with relief">Closed with relief</option>
+                    </select>
+                </div>
+
+                    <div class="input-group">
+                        <label for="Timely Responce">Timely Responce:</label>
+                        <select id="Timely Responce"  name="Timely_Responce",required>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <h2>{{result}}</h2>
+                    <input type="submit" class="submit-btn" value="Submit">  
+        </div>            
+            </form>    
+	
+	<footer>
+		<div class="footer-container">
+		  <div class="footer-item">
+			<h3>About Us</h3>
+			<p> Our team is passionate about using data analysis and machine learning to help consumers make informed decisions about their banking disputes. </p>
+		  </div>
+		  <div class="footer-item">
+			<h3>Contact Us</h3>
+			<p>Email: sk551460@gmail.com</p>
+			<p>Phone: 9815544235</p>
+			<p>Address: Noida. Uttar Pradesh</p>
+		  </div>
+		  <div class="footer-item">
+			<h3>Connect</h3>
+			<ul>
+			  <li><a href="#">Facebook</a></li>
+			  <li><a href="#">Twitter</a></li>
+			  <li><a href="#">Instagram</a></li>
+			</ul>
+		  </div>
+		</div>
+	  </footer>
+</body>
+</html>
