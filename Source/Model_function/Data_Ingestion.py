@@ -8,6 +8,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from Source.Model_function.Data_transformation import DataTransformClass
 from Data_model import DataModelClass
+import warnings
+warnings.filterwarnings('ignore')
 
 @dataclass
 class DataIngestionCreationClass:

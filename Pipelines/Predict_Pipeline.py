@@ -4,6 +4,8 @@ import pandas as pd
 from Source.exception import CustomExceptionClass
 from Source.logger import logging
 from Source.utils import load_obj_file
+import warnings
+warnings.filterwarnings('ignore')
 
 class PredictPipelineClass:
     def __init__(self):

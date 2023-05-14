@@ -2,16 +2,12 @@ from Source.logger import logging
 from Source.exception import CustomExceptionClass
 from Source.utils import save_objects_file
 from dataclasses import dataclass
-
 import os,sys
 import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-
-
 import warnings
 warnings.filterwarnings('ignore')
-
 
 @dataclass
 class DataModelConfig:
