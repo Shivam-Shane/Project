@@ -3,8 +3,6 @@ import pandas as pd
 from Source.logger import logging
 from Pipelines.Predict_Pipeline import PredictPipelineClass
 from Pipelines.Predict_Pipeline import CustomDataClass
-import warnings
-warnings.filterwarnings('ignore')
 
 logging.info("Starting application")
 application=Flask(__name__)
@@ -38,5 +36,5 @@ def predict_datapoint():
         return render_template('home.html',result=result)
 
 if __name__=="__main__":
-        application.run(host="0.0.0.0",port=8080)
+        application.run(host="0.0.0.0",port=8080,debug=True)
     
