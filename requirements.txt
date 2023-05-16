@@ -2,8 +2,8 @@ pandas
 numpy
 matplotlib
 seaborn
+scikit-learn
 flask
 datetime
 NLTK
-sklearn
 -e .
