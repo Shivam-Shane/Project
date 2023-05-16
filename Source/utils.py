@@ -3,8 +3,6 @@ import sys
 import pickle
 from Source.exception import CustomExceptionClass
 from Source.logger import logging
-import warnings
-warnings.filterwarnings('ignore')
 
 def save_objects_file(file_path, object):
     try:
