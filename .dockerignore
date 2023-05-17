@@ -1,2 +1,5 @@
 .gitignore
 .git
+#ignore only csv file that are inside Assets folder and its subdirectory
+Assets/**/*.csv
+
