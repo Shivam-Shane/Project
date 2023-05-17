@@ -38,9 +38,9 @@ class PredictPipelineClass:
                 raise CustomExceptionClass(str(e),sys.exc_info())
         logging.info("Returing result {}".format(result))
         if result==0:
-            return 'Consumer not disputed'# return the prediction as a string
+            return 'Consumer will not dispute'# return the prediction as a string
         else:
-            return 'Consumer disputed'
+            return 'Consumer will dispute'
         
 class CustomDataClass:
     def __init__(self,Date_Received,Product_Name,Issue_Detail,Submitted_Via, Date_sent_to_company,Company_Responce,Timely_Responce):
