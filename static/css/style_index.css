@@ -1,0 +1,122 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  body {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    color: white;
+    background: linear-gradient(to right, #6ca1c4, #9ad1e7, #e7cece);}
+  
+  .container {
+    max-width: 90rem;
+    margin: 2rem auto;
+    padding: 0px 2rem;
+  }
+  
+  .logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    outline: 4px solid rgb(219, 207, 207);
+  }
+  .img-fluid {
+    max-width: 100%;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 3rem;
+    align-items: center;
+  }
+  
+  .items {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  
+  .items a:link {
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .items a:hover {
+    color: rgb(1, 6, 8);
+  }
+  
+  .active {
+    color: rgb(13, 7, 7) !important;
+  }
+  
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+  }
+  .hero-heading {
+    font-size: 3rem;
+    margin-bottom: 0.3rem;
+  }
+  .hero-sub-heading {
+    font-size: 0.9rem;
+    /* opacity: 0.7; */
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+      
+  
+  #slideshow {
+        width: 80%;
+        height: 300px;
+        overflow: hidden;
+        opacity: 0.8;
+      }
+      
+      #slideshow img {
+        width: 85%;
+        height: 85%;
+        object-fit: contain;
+        opacity: 0.9; /* Adjust the opacity as needed */
+        mix-blend-mode: screen; /* Experiment with different blending modes */
+      }
+      #predict-now-container{
+        display: flex;
+    justify-content: center;
+   
+  }
+   #link-redirection {
+    display: flex;
+    justify-content: left;
+    color: black;
+    margin-left: 220px;
+
+   
+  }
+      #predict-now {
+        margin-top: -16px;
+        border-radius: 8%;
+        background-color: #333;
+        color: white;
+        padding: 10px 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        
+      }
+  
+      
+      #predict-now:hover {
+        background-color: #65da9a;
+      }
+  
