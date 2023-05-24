@@ -4,8 +4,7 @@ from Source.exception import CustomExceptionClass# Exception class
 from Source.logger import logging# logging module
 from dataclasses import dataclass
 import pandas as pd
-from Source.Model_function.Data_transformation import DataTransformClass
-from Data_model import DataModelClass
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -38,19 +37,3 @@ class DataIngestionClass:
         return(
             self.data_ingestion.data_path 
         )            
-
-if __name__=="__main__":
-    obj=DataIngestionClass()
-    data_path=obj.data_ingestion_initiated()
-
-    data_transformation_obj=DataTransformClass()
-    
-    data_attr,data_target_attr=data_transformation_obj.initiate_data_transformation(data_path)
-
-    data_modeleling=DataModelClass()
-    data_modeleling.initiate_data_model(data_attr,data_target_attr)
-    
-
-
-
-    
