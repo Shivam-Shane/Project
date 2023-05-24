@@ -1,5 +1,8 @@
-.gitignore
-.git
-#ignore only csv file that are inside Assets folder and its subdirectory
-Assets/**/*.csv
+# Ignore the .git directory
+.git/
 
+# Ignore the .conda file
+.conda
+
+# Ignore CSV files within the Assets folder and its subdirectories
+Assets/**/*.csv
