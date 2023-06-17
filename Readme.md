@@ -26,17 +26,18 @@ We have been provided with a dataset containing the following columns –
 When customers are dissatisfied with certain aspects of a business, they often contact customer service to raise complaints. While businesses strive to address these complaints, it's not always possible to satisfy every customer completely.
 
 ## Prerequisites:
-Python.
-Machine learning.
-Nlp.
-Github Action.
-Aws pipelines.
+1. Python.
+2. Machine learning.
+3. Nlp.
+4. Github Action.
+5. Aws pipelines.
 
 # Installation
-Create a anaconda environment.
-Clone the repo.
-git clone https://github.com/Shivam-Shane/Project.git
-run application.py build.
+1. Create a anaconda environment.
+2. Clone the repo.
+3. git clone https://github.com/Shivam-Shane/Project.git
+4. run application.py
+5. open https://localhost:1000 in browser
 
 # Images:
 ![Project output image](Images/first.png)
