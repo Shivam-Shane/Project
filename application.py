@@ -52,4 +52,4 @@ def predict_datapoint():
 
 if __name__ == "__main__":
     # Running the Flask application on local host and port 1000
-    application.run(host="0.0.0.0", port=1000)
+    application.run(host="0.0.0.0", port=1000,debug=True)
