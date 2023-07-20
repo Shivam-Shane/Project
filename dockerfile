@@ -1,4 +1,5 @@
 FROM python:3.11-slim-buster
+LABEL image="consumer_disputed_project_by_shivam"
 WORKDIR /app
 COPY . /app
 RUN apt update -y

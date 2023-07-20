@@ -32,13 +32,19 @@ When customers are dissatisfied with certain aspects of a business, they often c
 4. Github Action.
 5. Aws pipelines.
 
-# Installation
-1. Create a anaconda environment.
+# Installation Instructions
+1. Create a anaconda environment. visit https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands
 2. Clone the repo.
 3. git clone https://github.com/Shivam-Shane/Project.git
 4. run application.py
 5. open https://localhost:1000 in browser
 
+# Direct usage
+1. Download and install docker Visit https://docs.docker.com/engine/install/
+2. Download image from docker hub. Run Command 'docker pull sshivamshane/projects-consumer_disputed:latest'
+3. Run docker image on port 1000:1000
+4. Open https://localhost:1000
+5. You are ready to start making predictions 
 # Images:
 ![Project output image](Images/first.png)
 

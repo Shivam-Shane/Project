@@ -1,6 +1,6 @@
 version: '1.1'
 services:
-  consumerdisputed:
+  consumer_disputed:
     build:
       context: . ##specifing that whole data of cwd will use ofr image building
       dockerfile: dockerfile # from where build wors

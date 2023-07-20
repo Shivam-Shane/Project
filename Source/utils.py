@@ -4,6 +4,7 @@ import pickle
 from Source.exception import CustomExceptionClass
 from Source.logger import logging
 
+
 def save_objects_file(file_path, object):
     try:
         dir_path = os.path.dirname(file_path)

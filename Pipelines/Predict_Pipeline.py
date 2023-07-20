@@ -80,5 +80,3 @@ class CustomDataClass:
             raise CustomExceptionClass(str(e),sys.exc_info())  
         logging.info("Done creating Data from dataframe") 
         return dataframe_data
-
-        

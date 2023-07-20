@@ -4,7 +4,6 @@ from Source.exception import CustomExceptionClass# Exception class
 from Source.logger import logging# logging module
 from dataclasses import dataclass
 import pandas as pd
-
 import warnings
 warnings.filterwarnings('ignore')
 
