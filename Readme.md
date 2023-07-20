@@ -41,7 +41,7 @@ When customers are dissatisfied with certain aspects of a business, they often c
 
 # Direct usage
 1. Download and install docker Visit https://docs.docker.com/engine/install/
-2. Download image from docker hub. Run Command 'docker pull sshivamshane/projects-consumer_disputed:latest'
+2. Download image from docker hub. Run Command 'docker pull shivamshane/projects-consumer_disputed:latest'
 3. Run docker image on port 1000:1000
 4. Open https://localhost:1000
 5. You are ready to start making predictions 
